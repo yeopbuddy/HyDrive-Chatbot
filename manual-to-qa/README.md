@@ -64,5 +64,4 @@ PDF 문서를 텍스트(.txt)로 변환합니다.
 - 제품 사용법 질의응답
 - 사용자 설명서 요약
 
-👨‍💻 Maintained by @yeopbuddy
-문의: [kjohn0714@ajou.ac.kr] / GitHub Issue
+👨‍💻 Maintained by @yeopbuddy(kjohn0714@ajou.ac.kr)
