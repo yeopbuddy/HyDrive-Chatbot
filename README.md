@@ -72,16 +72,8 @@ HyDrive는 이러한 불편을 해소하기 위해 자연어 기반의 직관적
 
 ## 🛠 구성 레포 및 모듈
 
-### 1️⃣ `pdf-to-txt/`
-PDF 문서를 텍스트(.txt)로 변환합니다.  
-다양한 방식으로 텍스트를 추출할 수 있습니다:
-
-- `PyMuPDF`
-- `pdfplumber`
-- `PyPDF2`
-- `OCR (Tesseract)`
-
-📂 출력 경로: `./txts/*.txt`
+### 1️⃣ `manual-to-qa`
+PDF 문서를 텍스트(.txt)로 변환하고, 이를 QA DataSet(.json)으로 가공합니다.
 
 ---
 
