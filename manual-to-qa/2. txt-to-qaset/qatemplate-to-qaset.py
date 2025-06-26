@@ -4,7 +4,7 @@ import json
 import time
 from pathlib import Path
 
-openai.api_key = "YOUR_OPENAI_API_KEY"  # 여기에 API 키 넣어줘
+openai.api_key = "YOUR_OPENAI_API_KEY" 
 
 # 경로 설정
 template_dir = Path("YOUR_TEMPLATE_PATH")
