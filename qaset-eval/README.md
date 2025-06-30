@@ -10,15 +10,15 @@ OpenAI GPT API와 [`DeepEval`](https://github.com/confident-ai/deepeval) 기반 
 
 ```
 qaset-eval/
-├── gpt_relevancy_eval.py         # GPT API 기반 정성 평가
-├── deepeval_metrics_eval.py      # DeepEval 기반 정량 평가
+├── qaset-quality-eval-gpt.py           # GPT API 기반 정성 평가
+├── qaset-quality-eval-deepeval.py      # DeepEval 기반 정량 평가
 ```
 
 ---
 
 ## 🔍 평가 방식
 
-### ✅ 1. DeepEval 기반 평가 (`deepeval_metrics_eval.py`)
+### ✅ 1. DeepEval 기반 평가 (`qaset-quality-eval-deepeval.py`)
 
 * **샘플링 방식**: `type + category` 기준 다중 기준 층화 샘플링 (총 300개 샘플)
 * **사용 메트릭**:
@@ -36,7 +36,7 @@ qaset-eval/
 
 ---
 
-### ✅ 2. GPT 기반 평가 (`gpt_relevancy_eval.py`)
+### ✅ 2. GPT 기반 평가 (`qaset-quality-eval-gpt.py`)
 
 * **평가 항목**: 사용자가 궁금한 질문에 대한 답변이 적절한지 GPT-4o가 평가
 * **응답 포맷**:
