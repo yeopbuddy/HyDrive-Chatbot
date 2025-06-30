@@ -7,7 +7,7 @@ HyDrive Chatbot은 자동차의 방대한 차량 매뉴얼을 RAG(Retrieval-Augm
 ## 🔍 문제 정의 (Problem Statement)
 
 자동차 차량의 기능은 점점 복잡해지고 있음에도 불구하고,
-사용자들은 매뉴얼의 방대한 분량, 어려운 용어, 차종별 정보 분산 등의 이유로 필요한 정보를 찾기 어렵습니다. 
+사용자들은 매뉴얼의 방대한 분량, 어려운 용어, 차종별 정보 분산 등의 이유로 필요한 정보를 찾기 어렵습니다.
 
 HyDrive는 이러한 불편을 해소하기 위해 자연어 기반의 직관적 검색과 차량 모델별 맞춤 응답을 제공합니다.
 
@@ -51,21 +51,24 @@ HyDrive는 이러한 불편을 해소하기 위해 자연어 기반의 직관적
 
 ### 🛠️ 처리 파이프라인
 1. **데이터 수집**
-   - 자동차 메뉴얼 사이트
+   - 자동차 매뉴얼 사이트 등으로부터 PDF 확보
 
 2. **PDF Parsing 및 OCR 처리**
-   - PyMuPDF, pdfplumber, Tesseract 등 활용하여 이미지/텍스트 분리
+   - PyMuPDF, pdfplumber, pypdf, pytesseract 등 사용하여 이미지/텍스트 추출
 
 3. **텍스트 정제 및 문단 분할**
-   - 문서 섹션별 분할 → 질문 가능 단위로 재구성
+   - "=== Page ===" 단위로 문단 분할 후 QA 문맥 단위로 정제
 
-4. **문서 임베딩 및 벡터화 저장**
-   - 각 문단 임베딩 → FAISS, Pinecone 등 벡터 DB에 저장
+4. **QA 생성**
+   - 정제된 문단 기반으로 GPT API를 통해 질문-답변 세트 생성
 
-5. **RAG 기반 질문-응답**
-   - 사용자 질문 입력 → 유사 문단 검색 → LLM 응답 생성
+5. **문서 임베딩 및 검색**
+   - 문단 임베딩 → 벡터 DB (FAISS, Pinecone 등)에 저장
 
-6. **출처 표시 기능 포함**
+6. **RAG 기반 질문-응답**
+   - 사용자 질문 → 문단 검색 → GPT로 응답 생성
+
+7. **출처 표시 기능 포함**
    - 예: "p.36 에어컨 자동모드 설정"
 
 ---
@@ -73,26 +76,47 @@ HyDrive는 이러한 불편을 해소하기 위해 자연어 기반의 직관적
 ## 🛠 구성 레포 및 모듈
 
 ### 1️⃣ `manual-to-qa`
-PDF 문서를 텍스트(.txt)로 변환하고, 이를 QA DataSet(.json)으로 가공합니다.
+PDF 문서를 텍스트(.txt)로 변환하고, 이를 기반으로 QA DataSet(.jsonl)을 생성합니다.
+
+- `pdf-to-txt/`: PyMuPDF, pdfplumber, pypdf, pytesseract 중 하나를 선택하여 PDF 내 텍스트 추출
+- `txt-to-qaset/`: 추출된 텍스트 파일을 기반으로 QA 템플릿 생성 후 GPT 기반 자동 QA 생성
+
+### 2️⃣ `qaset-eval`
+생성된 QA 데이터셋(.jsonl)에 대해 자동 평가를 수행합니다.
+
+- `deepeval_metrics_eval.py`: DeepEval 라이브러리를 활용하여 답변의 적절성/유해성 평가
+- `gpt_relevancy_eval.py`: GPT-4 기반 프롬프트 평가를 통해 정성적 평가 수행
 
 ---
 
 ## 🧠 활용 기술 스택
 
 - **LLM**: OpenAI GPT (LLM 교체 가능)
-- **Document Parsing**: Tesseract, PyMuPDF, Tesseract
+- **Document Parsing**: PyMuPDF, pdfplumber, pypdf, Tesseract OCR
+- **QA 생성**: OpenAI GPT API
+- **평가 메트릭**: DeepEval Metrics, GPT 기반 프롬프트 평가
 - **Embedding 모델**: OpenAI Embedding API
-<!-- - **벡터DB**: FAISS, Pinecone -->
+<!-- - **Vector DB**: FAISS, Pinecone -->
 <!-- - **RAG 프레임워크**: LangChain, Haystack 등 -->
-<!--- **Backend**: Python (FastAPI, Flask 등)-->
-<!-- - **Frontend**: React, Vue.js, 또는 Streamlit 기반 MVP -->
+<!-- - **Backend**: Python (FastAPI, Flask 등) -->
+<!-- - **Frontend**: React, Vue.js 또는 Streamlit 기반 MVP -->
 
 ---
 
 ## 🚀 향후 계획
 - 다국어(한국어/영어) 대응 강화
-- 사용자 로그 기반 답변 개선
-- 차량 IoT 연동(OBD 데이터와 연결된 실시간 질문 지원)
-- 차량 매뉴얼 외 서비스 센터 위치, 정비 예약 기능 확장
+- 사용자 로그 기반 응답 개선
+- 차량 IoT 연동(OBD 기반 실시간 질문 응답)
+- 고객센터 및 정비 이력 연계 기능 확장
+- QA 생성 및 평가의 품질 지속 개선
 
 ---
+
+## 📞 문의 및 기여 환영
+
+QA 생성 및 평가 기준은 지속적으로 고도화됩니다.  
+**회귀적 평가자(Retrospective Evaluator)** 설정,  
+**사이드 평가 지표** 정의,  
+**다중 층화 기반 샘플링** 등 고도화 방안도 검토 중입니다.
+
+기여를 원하신다면 이슈 등록 또는 PR 부탁드립니다! 🙌
