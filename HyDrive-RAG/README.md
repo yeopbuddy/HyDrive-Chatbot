@@ -13,7 +13,7 @@
 - 방대한 양의 차량 매뉴얼을 직접 읽지 않고 필요할 때 신속하게 정확한 정보를 얻을 수 있도록 하기 위함
 
 ### 🔗 배포 링크
-https://amuredo.me/
+https://amuredo.me/   
 https://qa-chatbot-git-main-songhwas-projects.vercel.app/
 
 > - 초기 진입 시 차량 모델을 선택하고 질문을 입력하면 AI가 답변합니다.  
